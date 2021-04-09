@@ -1,10 +1,8 @@
 import React from "react";
-import { api } from "../utils/api.js";
-import { NavLink, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 function Register(props) {
-    const history = useHistory()
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
@@ -19,19 +17,9 @@ function Register(props) {
     function handleSubmit(e) {
         e.preventDefault();
 
-        api.signUp(password, email)
-            .then((data) => {
-                props.openPopup(true)
-                props.setSuccess(true)
-                history.push('/sign-in')
-                console.log(data);
-            })
-            .catch((err) => {
-                props.openPopup(true)
-                props.setSuccess(false)
-                console.log(err);
-            });
+        props.onRegister(password, email);
     }
+
     return (
         <form className='register'
             onSubmit={handleSubmit}>
@@ -59,9 +47,9 @@ function Register(props) {
             <button type='submit' className='register__button'>
                 Зарегистрироваться
         </button>
-            <NavLink className='register__link' to='/sign-in'>
+            <Link className='register__link' to='/sign-in' onClick={props.switchLink}>
                 Уже зарегистрированы? Войти
-        </NavLink>
+        </Link>
         </form>
     )
 }

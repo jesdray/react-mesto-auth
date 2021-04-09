@@ -1,10 +1,6 @@
 import React from "react";
-import { api } from "../utils/api.js";
-import { useHistory } from 'react-router-dom';
-
 
 function Login(props) {
-  const history = useHistory()
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -19,16 +15,7 @@ function Login(props) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    api.signIn(password, email)
-      .then((data) => {
-        console.log(data);
-        localStorage.setItem('token', data.token);
-        props.setLoggedIn(true);
-        history.push('/');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    props.onLogin(password, email);
   }
 
   return (

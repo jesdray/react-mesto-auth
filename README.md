@@ -18,4 +18,4 @@
 ---
 ### **Ссылка на сайт**
 
-**https://jesdray.github.io/mesto/**
+**https://jesdray.github.io/react-mesto-auth/**

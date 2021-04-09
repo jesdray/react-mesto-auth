@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import "../index.css";
 import Header from "./Header";
 import Main from "./Main";
@@ -17,6 +17,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { loggedInContext } from '../contexts/loggedInContext'
 
 function App() {
+  const history = useHistory()
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(
     false
   );
@@ -31,6 +32,11 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [openPopupSuccess, setOpenPopupSuccess] = React.useState(false);
   const [success, setSuccess] = React.useState();
+  const [login, setLogin] = React.useState(true);
+
+  function switchHeaderLink() {
+    setLogin(!login)
+  }
 
 
   function tokenCheck() {
@@ -175,6 +181,43 @@ function App() {
       });
   }
 
+  function onRegister(password, email) {
+    api.signUp(password, email)
+      .then((data) => {
+        setOpenPopupSuccess(true)
+        setSuccess(true)
+        history.push('/sign-in')
+        console.log(data);
+        return (
+          <Redirect to='/sign-in' />
+        )
+      })
+      .catch((err) => {
+        setOpenPopupSuccess(true)
+        setSuccess(false)
+        console.log(err);
+      });
+  }
+
+  function onLogin(password, email) {
+    api.signIn(password, email)
+      .then((data) => {
+        setUserEmail(email)
+        localStorage.setItem('token', data.token);
+        setLoggedIn(true);
+        history.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function onSignOut() {
+    localStorage.removeItem('token');
+    setLogin(true);
+    setLoggedIn(false)
+  }
+
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
@@ -183,7 +226,9 @@ function App() {
             <Switch>
               <div className="page">
                 <Header
-                  setLoggedIn={setLoggedIn}
+                  switchLink={switchHeaderLink}
+                  onSignOut={onSignOut}
+                  login={login}
                   userEmail={userEmail}
                 />
                 <ProtectedRoute
@@ -203,13 +248,13 @@ function App() {
                 </Route>
                 <Route path='/sign-in'>
                   <Login
+                    onLogin={onLogin}
                     setLoggedIn={setLoggedIn} />
                 </Route>
                 <Route path='/sign-up'>
                   <Register
-                    setLoggedIn={setLoggedIn}
-                    openPopup={setOpenPopupSuccess}
-                    setSuccess={setSuccess}
+                    switchLink={switchHeaderLink}
+                    onRegister={onRegister}
                   />
                 </Route>
                 <Footer />
