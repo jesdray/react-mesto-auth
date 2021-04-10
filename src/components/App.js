@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Redirect, Route, Switch, useHistory } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import "../index.css";
 import Header from "./Header";
 import Main from "./Main";
@@ -122,8 +122,8 @@ function App() {
     api
       .editDataUser(data)
       .then((data) => {
-        setCurrentUser(data);
         closeAllPopups();
+        setCurrentUser(data);
       })
       .catch((err) => {
         console.log(err);
@@ -135,8 +135,8 @@ function App() {
     api
       .editAvatarUser(url.avatar)
       .then((data) => {
-        setCurrentUser(data);
         closeAllPopups();
+        setCurrentUser(data);
       })
       .catch((err) => {
         console.log(err);
@@ -173,8 +173,8 @@ function App() {
     api
       .postNewCard(data)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
         closeAllPopups();
+        setCards([newCard, ...cards]);
       })
       .catch((err) => {
         console.log(err);
@@ -187,10 +187,6 @@ function App() {
         setOpenPopupSuccess(true)
         setSuccess(true)
         history.push('/sign-in')
-        console.log(data);
-        return (
-          <Redirect to='/sign-in' />
-        )
       })
       .catch((err) => {
         setOpenPopupSuccess(true)
@@ -222,7 +218,6 @@ function App() {
     <>
       <CurrentUserContext.Provider value={currentUser}>
         <loggedInContext.Provider value={loggedIn}>
-          <BrowserRouter>
             <Switch>
               <div className="page">
                 <Header
@@ -286,7 +281,6 @@ function App() {
                 />
               </div>
             </Switch>
-          </BrowserRouter>
         </loggedInContext.Provider>
       </CurrentUserContext.Provider>
     </>
